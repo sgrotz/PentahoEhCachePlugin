@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libext/kettle-core.jar"/>
+	<classpathentry kind="lib" path="libext/kettle-db.jar"/>
+	<classpathentry kind="lib" path="libext/kettle-dbdialog.jar"/>
+	<classpathentry kind="lib" path="libext/kettle-engine.jar"/>
+	<classpathentry kind="lib" path="libext/kettle-test.jar"/>
+	<classpathentry kind="lib" path="libext/kettle-ui-swt.jar"/>
+	<classpathentry kind="lib" path="libswt/commands.jar"/>
+	<classpathentry kind="lib" path="libswt/common.jar"/>
+	<classpathentry kind="lib" path="libswt/jface.jar"/>
+	<classpathentry kind="lib" path="libswt/runtime.jar"/>
+	<classpathentry kind="lib" path="libswt/osx64/swt.jar"/>
+	<classpathentry kind="lib" path="libehcache/ehcache-core-ee-2.6.0.jar"/>
+	<classpathentry kind="lib" path="libehcache/ehcache-terracotta-ee-2.6.0.jar"/>
+	<classpathentry kind="lib" path="libehcache/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="lib" path="libehcache/slf4j-jdk14-1.5.8.jar"/>
+	<classpathentry kind="lib" path="libehcache/terracotta-toolkit-1.6-runtime-ee-5.0.0.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
