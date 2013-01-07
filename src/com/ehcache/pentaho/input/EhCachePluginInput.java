@@ -99,15 +99,15 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 		if ((xmlURL == null) || (cacheName == null)) {
 			meta.setDefault();
 		}
-			logDebug("*** Using Cache: " + cacheName + " from configuration file: " + xmlURL);
-
+	
+		logDebug("*** Using Cache: " + cacheName + " from configuration file: " + xmlURL);
 
 		if ((cacheName != null) && (xmlURL != null)) {
-			//manager = CacheManager.newInstance("plugins/steps/ehCachePlugin/ehcache.xml");
 			manager = CacheManager.newInstance(xmlURL);
 			cache = manager.getCache(cacheName);
+		} else {
+			logError("*** No cacheName or XML URL was specified ...");
 		}
-
 
 		return super.init(iMeta, iData);
 	}
@@ -121,12 +121,14 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 		meta = (EhCachePluginInputMeta) iMeta;
 		data = (EhCachePluginInputData) iData;
 
+		// Make sure to check if the cache exists...
 		if (!manager.cacheExists(meta.getCacheName())) {
 			logError("*** Cache " + meta.getCacheName() + " does not exist in the ehcache.xml configuration file... ");
 			setOutputDone();
 			return false;
 		}
 		
+		// Once all the objects are processed exit here...
 		Object[] obj = getRow();
 		if (obj==null) {
 			logDebug("*** There is no more input ... Nothing to get from the cache! :(");
@@ -142,6 +144,7 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 			meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
 		}
 		
+		// Get the Key value from the input row ...
 		String key = data.outputRowMeta.getString(obj, data.outputRowMeta.indexOfValue("KEY"));
 
 		if (key != null) {
@@ -168,6 +171,7 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 		 
 		    return true;
 		} else {
+			// No key field was specified ... 
 			logError("*** KEY field was null ..."); 
 			return false;
 		}

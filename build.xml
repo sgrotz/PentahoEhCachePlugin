@@ -28,6 +28,7 @@
 	    <mkdir dir="${classes}"/>
 	    <mkdir dir="${lib}"/>
 	    <mkdir dir="${distrib}"/>
+	    <delete file="${zipfilename}"/>
 	  </target>
 
 	  <!--

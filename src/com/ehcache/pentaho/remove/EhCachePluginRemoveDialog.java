@@ -106,7 +106,7 @@ public class EhCachePluginRemoveDialog extends BaseStepDialog implements StepDia
 		formLayout.marginHeight = Const.FORM_MARGIN;
 
 		shell.setLayout(formLayout);
-		shell.setText(Messages.getString("EhCachePluginOutputDialog.Shell.Title")); //$NON-NLS-1$
+		shell.setText(Messages.getString("EhCachePluginRemoveDialog.Shell.Title")); //$NON-NLS-1$
 
 		int middle = props.getMiddlePct();
 		int margin = Const.MARGIN;
@@ -114,7 +114,7 @@ public class EhCachePluginRemoveDialog extends BaseStepDialog implements StepDia
 
 		// Stepname line
 		wlStepname=new Label(shell, SWT.RIGHT);
-		wlStepname.setText(Messages.getString("EhCachePluginInputDialog.StepName.Label")); //$NON-NLS-1$
+		wlStepname.setText(Messages.getString("EhCachePluginRemoveDialog.StepName.Label")); //$NON-NLS-1$
 		props.setLook( wlStepname );
 		fdlStepname=new FormData();
 		fdlStepname.left = new FormAttachment(0, 0);
@@ -133,7 +133,7 @@ public class EhCachePluginRemoveDialog extends BaseStepDialog implements StepDia
 
 		// CacheConfiguration URL
 		wlValName=new Label(shell, SWT.RIGHT);
-		wlValName.setText(Messages.getString("EhCachePluginInputDialog.Ehcache.Label")); //$NON-NLS-1$
+		wlValName.setText(Messages.getString("EhCachePluginRemoveDialog.Ehcache.Label")); //$NON-NLS-1$
 		props.setLook( wlValName );
 		fdlValName=new FormData();
 		fdlValName.left = new FormAttachment(0, 0);
@@ -151,7 +151,7 @@ public class EhCachePluginRemoveDialog extends BaseStepDialog implements StepDia
 
 		// Cache Name
 		wlValue=new Label(shell, SWT.RIGHT);
-		wlValue.setText(Messages.getString("EhCachePluginInputDialog.CacheName.Label")); //$NON-NLS-1$
+		wlValue.setText(Messages.getString("EhCachePluginRemoveDialog.CacheName.Label")); //$NON-NLS-1$
 		props.setLook( wlValue );
 		fdlValue=new FormData();
 		fdlValue.left = new FormAttachment(0, 0);

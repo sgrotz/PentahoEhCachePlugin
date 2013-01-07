@@ -38,6 +38,7 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.logging.LogChannelInterface;
 import org.pentaho.di.core.row.RowDataUtil;
+import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaAndData;
@@ -93,19 +94,18 @@ public class EhCachePluginList extends BaseStep implements StepInterface {
 		String cacheName = meta.getCacheName();
 		String xmlURL = meta.getXmlURL();
 
-
 		if ((xmlURL == null) || (cacheName == null)) {
 			meta.setDefault();
 		}
-			logDebug("*** Using Cache: " + cacheName + " from configuration file: " + xmlURL);
-
+		
+		logDebug("*** Using Cache: " + cacheName + " from configuration file: " + xmlURL);
 
 		if ((cacheName != null) && (xmlURL != null)) {
-			//manager = CacheManager.newInstance("plugins/steps/ehCachePlugin/ehcache.xml");
 			manager = CacheManager.newInstance(xmlURL);
 			cache = manager.getCache(cacheName);
+		} else {
+			logError("No cacheName or XML URL was specified ...");
 		}
-
 
 		return super.init(iMeta, iData);
 	}
@@ -119,17 +119,39 @@ public class EhCachePluginList extends BaseStep implements StepInterface {
 		meta = (EhCachePluginListMeta) iMeta;
 		data = (EhCachePluginListData) iData;
 
+		// Make sure to check that the cache exists ...
 		if (!manager.cacheExists(meta.getCacheName())) {
 			logError("*** Cache " + meta.getCacheName() + " does not exist in the ehcache.xml configuration file... ");
 			setOutputDone();
 			return false;
 		}
 		
+		if (first)
+		{
+			logDebug("*** This is the first record ...");
+			first = false;
+			
+			ValueMetaInterface id = new ValueMeta("KEYS", ValueMetaInterface.TYPE_STRING);
+			
+			//data.outputRowMeta.clone();
+			// data.outputRowMeta.addValueMeta(id);
+			
+		    RowMetaInterface newFields = new RowMeta();
+
+		    newFields.addValueMeta(id); 
+		    data.outputRowMeta.addRowMeta(newFields);
+		    
+			logDebug("Output Row Size: " + data.outputRowMeta.size());
+			logDebug("Field names found: " + data.outputRowMeta.getFieldNames().toString());
+			
+			//meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
+		}
+		
 		cache = manager.getCache(meta.getCacheName());
 		List keys = cache.getKeys();
 		
 		logDebug("*** Found " + keys.size() + " Elements: " + keys.toString());
-		Object[] obj = new Object[keys.size()];
+		Object[] obj = getRow();
 		
 		Iterator it = keys.iterator();
 		int i = 0;
@@ -144,15 +166,19 @@ public class EhCachePluginList extends BaseStep implements StepInterface {
 			Element e = cache.get(it.next());
 			
 			String key = e.getObjectKey().toString();
-			//Object[] obj = getRow();
-			logDebug("*** Adding Key " + e.getObjectKey() + " to the output list ...");
-			outputRow = RowDataUtil.addValueData(outputRow, 0, key);
-		
-			putRow(data.outputRowMeta, outputRow);
+			
+			logDebug("*** Adding Key " + key + " to the output list ...");
+			
+			if (e != null) {
+				// If not null - add to the output ...
+				outputRow = RowDataUtil.addValueData(obj, data.outputRowMeta.size()-1, e.getObjectKey().toString());
+				putRow(data.outputRowMeta, outputRow);
+				
+				incrementLinesWritten();	
+			}
+
 			i++;
-			
-			//logDebug("Output row size is: " + outputRow.length + outputRow.toString());
-			
+		
 		    // Some basic logging
 		    if (checkFeedback(getLinesRead())) {
 		        if (log.isBasic()) logBasic("Linenr " + getLinesRead()); 

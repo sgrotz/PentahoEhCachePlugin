@@ -99,16 +99,14 @@ public class EhCachePluginOutput extends BaseStep implements StepInterface {
 			meta.setDefault();
 		}
 
-
-			logDebug("*** Using Cache: " + cacheName + " from configuration file: " + xmlURL);
-
+		logDebug("*** Using Cache: " + cacheName + " from configuration file: " + xmlURL);
 
 		if ((cacheName != null) && (xmlURL != null)) {
-			//manager = CacheManager.newInstance("plugins/steps/ehCachePlugin/ehcache.xml");
 			manager = CacheManager.newInstance(xmlURL);
 			cache = manager.getCache(cacheName);
+		} else {
+			logError("*** No cacheName or XML URL was specified ...");
 		}
-
 
 		return super.init(iMeta, iData);
 	}
@@ -121,13 +119,15 @@ public class EhCachePluginOutput extends BaseStep implements StepInterface {
 
 		meta = (EhCachePluginOutputMeta) iMeta;
 		data = (EhCachePluginOutputData) iData;
-
+		
+		// Make sure to check the cache exists before processing the entries ...
 		if (!manager.cacheExists(meta.getCacheName())) {
 			logError("*** Cache " + meta.getCacheName() + " does not exist in the ehcache.xml configuration file... ");
 			setOutputDone();
 			return false;
 		}
 		
+		// If all objects have been processed, exit here ... 
 		Object[] obj = getRow();
 		if (obj==null) {
 			logDebug("*** There is no more input ... Nothing to add to the cache! :(");
@@ -143,21 +143,24 @@ public class EhCachePluginOutput extends BaseStep implements StepInterface {
 			meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
 		}
 
+		// Get the ID's and Values from the input rows...
 		String value = data.outputRowMeta.getString(obj, data.outputRowMeta.indexOfValue("VALUE"));
 		String ID = data.outputRowMeta.getString(obj, data.outputRowMeta.indexOfValue("KEY"));
 
 		if ((ID != null) && (value != null)) {
 			cache = manager.getCache(meta.getCacheName());
 			
+			// Add the elements to the cache...
 			logDebug("*** Writing new Element: " + ID + " with value " + value);     
 			cache.put(new Element(ID, value));
 
 			if (checkFeedback(linesRead)) logBasic("Linenr "+linesRead);
-			// setOutputDone();	
+
 			incrementLinesWritten();
 			return true;
 		} else {
-			logError("*** ID or Value field was null ...");     
+			// Throw an error when the ID or Value was null
+			logError("*** KEY or VALUE field was null ...");     
 			return false;
 		}
 	}

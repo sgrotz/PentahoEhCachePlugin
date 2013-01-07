@@ -105,7 +105,7 @@ public class EhCachePluginInputDialog extends BaseStepDialog implements StepDial
 		formLayout.marginHeight = Const.FORM_MARGIN;
 
 		shell.setLayout(formLayout);
-		shell.setText(Messages.getString("EhCachePluginOutputDialog.Shell.Title")); //$NON-NLS-1$
+		shell.setText(Messages.getString("EhCachePluginInputDialog.Shell.Title")); //$NON-NLS-1$
 
 		int middle = props.getMiddlePct();
 		int margin = Const.MARGIN;
