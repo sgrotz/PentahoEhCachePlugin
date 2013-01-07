@@ -18,7 +18,7 @@
 	  <property name="libext"     			location="libext"/>
 	  <property name="libswt"     			location="libswt"/>
 	  <property name="libehcache"  			location="libehcache"/>
-	  <property name="zipfilename"  		value="ehCachePlugin_v01.zip"/>
+	  <property name="zipfilename"  		value="ehCachePlugin_v02.zip"/>
 	  <property name="deploydir"     		location="/Users/sgrotz/Data/tools/Pentaho/plugins/steps/ehCachePlugin"/>
 	
 	  <target name="init" description="create timestamp and directories">
@@ -77,7 +77,7 @@
 	    <copy todir="${lib}">
 	    	<fileset 
 	    		dir="${src}" 
-	    		includes="**/*.png,**/*.xml,**/*.properties,**/*.jar"/>
+	    		includes="**/*.png,**/*.xml,**/*.properties,**/*.jar,**/*.ktr"/>
 	  	    </copy>
 	  </target>
 	  
@@ -93,12 +93,12 @@
 	    <copy todir="${distrib}">
 	    	<fileset 
 	    		dir="${lib}" 
-	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties"/>
+	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties,**/*.ktr"/>
 	  	    </copy>
 	  	<copy todir="${distrib}">
 	    	<fileset 
 	    		dir="${libehcache}" 
-	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties"/>
+	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties,**/*.ktr"/>
 	  	    </copy>
 	  	    
 	  	<zip destfile="${zipfilename}"

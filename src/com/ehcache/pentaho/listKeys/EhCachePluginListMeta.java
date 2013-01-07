@@ -128,7 +128,7 @@ public class EhCachePluginListMeta extends BaseStepMeta implements StepMetaInter
 	    // append the outputFields to the output
 	    ValueMetaInterface id = new ValueMeta("KEYS", ValueMetaInterface.TYPE_STRING);
 	 
-	    //id.setOrigin(origin);
+	    id.setOrigin(origin);
 	    r.addValueMeta(id);
 	    
 	}

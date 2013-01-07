@@ -130,48 +130,31 @@ public class EhCachePluginList extends BaseStep implements StepInterface {
 		{
 			logDebug("*** This is the first record ...");
 			first = false;
-			
-			ValueMetaInterface id = new ValueMeta("KEYS", ValueMetaInterface.TYPE_STRING);
-			
-			//data.outputRowMeta.clone();
-			// data.outputRowMeta.addValueMeta(id);
-			
-		    RowMetaInterface newFields = new RowMeta();
-
-		    newFields.addValueMeta(id); 
-		    data.outputRowMeta.addRowMeta(newFields);
 		    
-			logDebug("Output Row Size: " + data.outputRowMeta.size());
-			logDebug("Field names found: " + data.outputRowMeta.getFieldNames().toString());
-			
-			//meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
+		    data.outputRowMeta = new RowMeta();
+		    meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
 		}
 		
 		cache = manager.getCache(meta.getCacheName());
 		List keys = cache.getKeys();
 		
 		logDebug("*** Found " + keys.size() + " Elements: " + keys.toString());
-		Object[] obj = getRow();
 		
 		Iterator it = keys.iterator();
 		int i = 0;
 		
-		//data.outputRowMeta = (RowMetaInterface)getInputRowMeta().clone();
-		//meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
-		
-		Object[] outputRow = RowDataUtil.resizeArray(obj, keys.size());
-		
+		Object[] outputRow = new Object[keys.size()];
+
 		while (it.hasNext()) {
 		
 			Element e = cache.get(it.next());
-			
 			String key = e.getObjectKey().toString();
 			
 			logDebug("*** Adding Key " + key + " to the output list ...");
 			
 			if (e != null) {
 				// If not null - add to the output ...
-				outputRow = RowDataUtil.addValueData(obj, data.outputRowMeta.size()-1, e.getObjectKey().toString());
+				outputRow = RowDataUtil.addValueData(outputRow, data.outputRowMeta.size()-1, key);
 				putRow(data.outputRowMeta, outputRow);
 				
 				incrementLinesWritten();	
@@ -185,7 +168,6 @@ public class EhCachePluginList extends BaseStep implements StepInterface {
 		    }
 		}
 	 
-		
 		setOutputDone();
 	    return false;
 		
