@@ -2,7 +2,7 @@
     name="TestCache"     
     updateCheck="false">    
     <diskStore         
-        path="./cacheStore/testCache">   
+        path="./cacheStore/TestCache">   
     </diskStore>   
      
     <defaultCache         

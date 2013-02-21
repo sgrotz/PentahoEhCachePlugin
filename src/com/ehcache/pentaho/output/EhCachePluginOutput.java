@@ -123,8 +123,10 @@ public class EhCachePluginOutput extends BaseStep implements StepInterface {
 		// Make sure to check the cache exists before processing the entries ...
 		if (!manager.cacheExists(meta.getCacheName())) {
 			logError("*** Cache " + meta.getCacheName() + " does not exist in the ehcache.xml configuration file... ");
-			setOutputDone();
-			return false;
+			
+			// If the cache does not exist, cancel all operations and exit!
+			setErrors(1);
+			stopAll();
 		}
 		
 		// If all objects have been processed, exit here ... 

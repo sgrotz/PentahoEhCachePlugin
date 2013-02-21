@@ -121,11 +121,13 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 		meta = (EhCachePluginInputMeta) iMeta;
 		data = (EhCachePluginInputData) iData;
 
-		// Make sure to check if the cache exists...
+		// Make sure to check the cache exists before processing the entries ...
 		if (!manager.cacheExists(meta.getCacheName())) {
 			logError("*** Cache " + meta.getCacheName() + " does not exist in the ehcache.xml configuration file... ");
-			setOutputDone();
-			return false;
+			
+			// If the cache does not exist, cancel all operations and exit!
+			setErrors(1);
+			stopAll();
 		}
 		
 		// Once all the objects are processed exit here...

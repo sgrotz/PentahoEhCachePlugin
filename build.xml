@@ -19,6 +19,7 @@
 	  <property name="libswt"     			location="libswt"/>
 	  <property name="libehcache"  			location="libehcache"/>
 	  <property name="zipfilename"  		value="ehCachePlugin_v02.zip"/>
+	  <property name="latestArchive"  		value="ehCachePlugin_latest.zip"/>
 	  <property name="deploydir"     		location="/Users/sgrotz/Data/tools/Pentaho/plugins/steps/ehCachePlugin"/>
 	
 	  <target name="init" description="create timestamp and directories">
@@ -101,10 +102,15 @@
 	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties,**/*.ktr"/>
 	  	    </copy>
 	  	    
-	  	<zip destfile="${zipfilename}"
+	  	<!-- Create a new Zip Archive -->    
+	  	<zip destfile="releases/${zipfilename}"
        		basedir="${distrib}"
        		update="true"
   			/>
+  			
+  		<!-- create a clone to _latest file -->	
+  	   <copy file="releases/${zipfilename}" tofile="${latestArchive}"/>
+  			
 	  </target>
 
 	  <!--
