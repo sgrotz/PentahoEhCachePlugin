@@ -13,10 +13,10 @@
 	<classpathentry kind="lib" path="libswt/jface.jar"/>
 	<classpathentry kind="lib" path="libswt/runtime.jar"/>
 	<classpathentry kind="lib" path="libswt/osx64/swt.jar"/>
-	<classpathentry kind="lib" path="libehcache/ehcache-core-ee-2.6.0.jar"/>
-	<classpathentry kind="lib" path="libehcache/ehcache-terracotta-ee-2.6.0.jar"/>
-	<classpathentry kind="lib" path="libehcache/slf4j-api-1.5.8.jar"/>
-	<classpathentry kind="lib" path="libehcache/slf4j-jdk14-1.5.8.jar"/>
-	<classpathentry kind="lib" path="libehcache/terracotta-toolkit-1.6-runtime-ee-5.0.0.jar"/>
+	<classpathentry kind="lib" path="libehcache/ehcache-core-ee-2.6.5.jar"/>
+	<classpathentry kind="lib" path="libehcache/ehcache-terracotta-ee-2.6.5.jar"/>
+	<classpathentry kind="lib" path="libehcache/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="libehcache/slf4j-jdk14-1.6.1.jar"/>
+	<classpathentry kind="lib" path="libehcache/terracotta-toolkit-1.6-runtime-ee-5.4.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -20,3 +20,8 @@ Within Kettle, you should see a new design category called "Terracotta". Simply 
 transformation and start using it. 
 
 Have fun!
+
+
+Change log: 
+* 26/02/2013 - Updated Terracotta libraries to 3.7.4
+

@@ -1,0 +1,31 @@
+<ehcache     
+    name="TestCache"     
+    updateCheck="false">    
+    <diskStore         
+        path="./cacheStore/TestCache">   
+    </diskStore>   
+     
+    <defaultCache         
+        eternal="false"         
+        maxElementsInMemory="5000"         
+        overflowToDisk="false">    
+    </defaultCache>    
+        
+    <cache         
+        name="TestCache"         
+        eternal="true"
+        maxBytesLocalHeap="100M"                 
+        overflowToDisk="false"         
+        maxElementsOnDisk="2000"
+        statistics="true"> 
+                <!--  --> 
+        <terracotta/>                 
+    </cache>     
+        
+   
+    <terracottaConfig         
+        url="localhost:9510"          
+        >    
+    </terracottaConfig>
+    
+</ehcache>
