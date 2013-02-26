@@ -67,8 +67,27 @@
   </info>
   <notepads>
   </notepads>
+  <connection>
+    <name>AgileBI</name>
+    <server>localhost</server>
+    <type>MONETDB</type>
+    <access>Native</access>
+    <database>pentaho-instaview</database>
+    <port>50006</port>
+    <username>monetdb</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb14a17edb86abd8</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_INFOBRIGHT.characterEncoding</code><attribute>UTF-8</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>50006</attribute></attribute>
+    </attributes>
+  </connection>
   <order>
-  <hop> <from>EhCache List Keys</from><to>EhCache Get</to><enabled>Y</enabled> </hop>  </order>
+  <hop> <from>Data Grid</from><to>EhCache Get</to><enabled>Y</enabled> </hop>  </order>
   <step>
     <name>EhCache Get</name>
     <type>ehcacheinput</type>
@@ -83,15 +102,15 @@
     <xmlURL>plugins&#47;steps&#47;ehCachePlugin&#47;ehcache.xml</xmlURL>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>354</xloc>
-      <yloc>164</yloc>
+      <xloc>203</xloc>
+      <yloc>78</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
 
   <step>
-    <name>EhCache List Keys</name>
-    <type>ehcachelist</type>
+    <name>Data Grid</name>
+    <type>DataGrid</type>
     <description/>
     <distribute>Y</distribute>
     <copies>1</copies>
@@ -99,12 +118,27 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <cacheName>TestCache</cacheName>
-    <xmlURL>plugins&#47;steps&#47;ehCachePlugin&#47;ehcache.xml</xmlURL>
+    <fields>
+      <field>
+        <name>KEY</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>25</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <data>
+      <line> <item>1</item> </line>
+      <line> <item>2</item> </line>
+      <line> <item>3</item> </line>
+    </data>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>159</xloc>
-      <yloc>65</yloc>
+      <xloc>53</xloc>
+      <yloc>29</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
