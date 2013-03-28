@@ -78,7 +78,7 @@ public class EhCachePluginRemove extends BaseStep implements StepInterface {
 		meta = (EhCachePluginRemoveMeta) iMeta;
 		data = (EhCachePluginRemoveData) iData;
 
-		// manager.shutdown();
+		manager.shutdown();
 
 		super.dispose(iMeta, iData);
 
@@ -118,6 +118,10 @@ public class EhCachePluginRemove extends BaseStep implements StepInterface {
 			throws KettleException {
 		// TODO Auto-generated method stub
 
+		if (manager == null) {
+			init(iMeta, iData);
+		}
+		
 		meta = (EhCachePluginRemoveMeta) iMeta;
 		data = (EhCachePluginRemoveData) iData;
 

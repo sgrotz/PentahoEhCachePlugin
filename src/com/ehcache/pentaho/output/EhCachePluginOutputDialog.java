@@ -30,28 +30,17 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleValueException;
-import org.pentaho.di.core.row.ValueMeta;
-import org.pentaho.di.core.row.ValueMetaAndData;
-import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.BaseStepMeta;
 import org.pentaho.di.trans.step.StepDialogInterface;
-import org.pentaho.di.ui.core.dialog.EnterValueDialog;
 import org.pentaho.di.ui.trans.step.BaseStepDialog;
 import com.ehcache.pentaho.*;
 
@@ -61,14 +50,9 @@ public class EhCachePluginOutputDialog extends BaseStepDialog implements StepDia
 	private String cacheName;
 	private String xmlURL;
 
-	private Label        wlValName;
-	private Text         wValName;
-	private FormData     fdlValName, fdValName;
-
-	private Label        wlValue;
-	private Button       wbValue;
-	private Text         wValue;
-	private FormData     fdlValue, fdbValue, fdValue;
+	private Text txEhcachePath;
+	private Text txCacheName;
+	private Text txStepName;
 
 	public EhCachePluginOutputDialog(Shell parent, Object object,
 			TransMeta transMeta, String stepname) throws KettleValueException {
@@ -93,7 +77,7 @@ public class EhCachePluginOutputDialog extends BaseStepDialog implements StepDia
 		props.setLook( shell );
 		setShellImage(shell, input);
 
-		ModifyListener lsMod = new ModifyListener() 
+		new ModifyListener() 
 		{
 			public void modifyText(ModifyEvent e) 
 			{
@@ -103,115 +87,52 @@ public class EhCachePluginOutputDialog extends BaseStepDialog implements StepDia
 		changed = input.hasChanged();
 
 
-		FormLayout formLayout = new FormLayout ();
-		formLayout.marginWidth  = Const.FORM_MARGIN;
-		formLayout.marginHeight = Const.FORM_MARGIN;
+		txEhcachePath = new Text(shell, SWT.BORDER);
+		txEhcachePath.setBounds(132, 38, 144, 19);
 
-		shell.setLayout(formLayout);
-		shell.setText(Messages.getString("EhCachePluginOutputDialog.Shell.Title")); //$NON-NLS-1$
+		Label lblNewLabel = new Label(shell, SWT.NONE);
+		lblNewLabel.setBounds(10, 41, 116, 14);
+		lblNewLabel.setText(Messages.getString("EhCachePluginOutputDialog.Ehcache.Label"));
 
-		int middle = props.getMiddlePct();
-		int margin = Const.MARGIN;
+		txCacheName = new Text(shell, SWT.BORDER);
+		txCacheName.setBounds(132, 63, 144, 19);
 
+		Label lblCacheName = new Label(shell, SWT.NONE);
+		lblCacheName.setText(Messages.getString("EhCachePluginOutputDialog.CacheName.Label"));
+		lblCacheName.setBounds(10, 66, 116, 14);
 
-		// Stepname line
-		wlStepname=new Label(shell, SWT.RIGHT);
-		wlStepname.setText(Messages.getString("EhCachePluginOutputDialog.StepName.Label")); //$NON-NLS-1$
-		props.setLook( wlStepname );
-		fdlStepname=new FormData();
-		fdlStepname.left = new FormAttachment(0, 0);
-		fdlStepname.right= new FormAttachment(middle, -margin);
-		fdlStepname.top  = new FormAttachment(0, margin);
-		wlStepname.setLayoutData(fdlStepname);
-		wStepname=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
-		wStepname.setText(stepname);
-		props.setLook( wStepname );
-		wStepname.addModifyListener(lsMod);
-		fdStepname=new FormData();
-		fdStepname.left = new FormAttachment(middle, 0);
-		fdStepname.top  = new FormAttachment(0, margin);
-		fdStepname.right= new FormAttachment(100, 0);
-		wStepname.setLayoutData(fdStepname);
-
-		// CacheConfiguration URL
-		wlValName=new Label(shell, SWT.RIGHT);
-		wlValName.setText(Messages.getString("EhCachePluginOutputDialog.Ehcache.Label")); //$NON-NLS-1$
-		props.setLook( wlValName );
-		fdlValName=new FormData();
-		fdlValName.left = new FormAttachment(0, 0);
-		fdlValName.right= new FormAttachment(middle, -margin);
-		fdlValName.top  = new FormAttachment(wStepname, margin);
-		wlValName.setLayoutData(fdlValName);
-		wValName=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
-		props.setLook( wValName );
-		wValName.addModifyListener(lsMod);
-		fdValName=new FormData();
-		fdValName.left = new FormAttachment(middle, 0);
-		fdValName.right= new FormAttachment(100, 0);
-		fdValName.top  = new FormAttachment(wStepname, margin);
-		wValName.setLayoutData(fdValName);
-
-		// Cache Name
-		wlValue=new Label(shell, SWT.RIGHT);
-		wlValue.setText(Messages.getString("EhCachePluginOutputDialog.CacheName.Label")); //$NON-NLS-1$
-		props.setLook( wlValue );
-		fdlValue=new FormData();
-		fdlValue.left = new FormAttachment(0, 0);
-		fdlValue.right= new FormAttachment(middle, -margin);
-		fdlValue.top  = new FormAttachment(wValName, margin);
-		wlValue.setLayoutData(fdlValue);
-
-		wValue=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
-		props.setLook( wValue );
-		wValue.addModifyListener(lsMod);
-		fdValue=new FormData();
-		fdValue.left = new FormAttachment(middle, 0);
-		fdValue.right= new FormAttachment(100, 0);
-		fdValue.top  = new FormAttachment(wlValue, margin);
-		wValue.setLayoutData(fdValue);
-
-		// Some buttons
-		wOK=new Button(shell, SWT.PUSH);
-		wOK.setText(Messages.getString("System.Button.OK")); //$NON-NLS-1$
-		wCancel=new Button(shell, SWT.PUSH);
-		wCancel.setText(Messages.getString("System.Button.Cancel")); //$NON-NLS-1$
-
-		BaseStepDialog.positionBottomButtons(shell, new Button[] { wOK, wCancel}, margin, wValue);
-
-		// Add listeners
-		lsCancel   = new Listener() { 
-
+		Button btnNewButton = new Button(shell, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void handleEvent(Event arg0) {
-				cancel();
-
-			} 
-		};
-
-		lsOK       = new Listener() { 
-			public void handleEvent(Event e) { 
-				ok();     
+			public void widgetSelected(SelectionEvent e) {
+				ok();
 			}
-		};
+		});
+		btnNewButton.setBounds(159, 88, 94, 28);
+		btnNewButton.setText("Save");
 
-		wCancel.addListener(SWT.Selection, lsCancel);
-		wOK.addListener    (SWT.Selection, lsOK    );
+		Button btnReset = new Button(shell, SWT.NONE);
+		btnReset.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				cancel();
+			}
+		});
+		btnReset.setBounds(32, 86, 94, 28);
+		btnReset.setText("Reset");
 
-		lsDef=new SelectionAdapter() { 
-			public void widgetDefaultSelected(SelectionEvent e) { 
-				ok(); 
-			} 
-		};
+		Link link = new Link(shell, SWT.NONE);
+		link.setBounds(132, 122, 55, 15);
+		link.setText("<a href=\"https://github.com/sgrotz/PentahoEhCachePlugin/raw/master/PentahoEhcachePlugin_Instructions.pdf\">Help!</a>");
 
-		wStepname.addSelectionListener( lsDef );
-		wValName.addSelectionListener( lsDef );
+		txStepName = new Text(shell, SWT.BORDER);
+		txStepName.setBounds(132, 10, 144, 19);
 
-		// Detect X or ALT-F4 or something that kills this window...
-		shell.addShellListener(	new ShellAdapter() { 
-			public void shellClosed(ShellEvent e) { 
-				cancel(); 
-			} 
-		} );
+		Label lblStepname = new Label(shell, SWT.NONE);
+		lblStepname.setText(Messages.getString("EhCachePluginOutputDialog.StepName.Label"));
+		lblStepname.setBounds(10, 13, 116, 14);
+
+
 
 		// Set the shell size, based upon previous time...
 		setSize();
@@ -236,20 +157,20 @@ public class EhCachePluginOutputDialog extends BaseStepDialog implements StepDia
 	// Read data from input (TextFileInputInfo)
 	public void getData()
 	{
-		wStepname.selectAll();
 
-			logDebug("*** CacheName is: " + cacheName + " xml URL is: " + xmlURL);
+		txStepName.setText(stepname);
+		logDebug("*** CacheName is: " + cacheName + " xml URL is: " + xmlURL);
 
 
-			if (cacheName!=null)
-			{
-				wValue.setText(cacheName);
-			}
+		if (cacheName!=null)
+		{
+			txCacheName.setText(cacheName);
+		}
 
-			if (xmlURL!=null)
-			{
-				wValName.setText(xmlURL);
-			}
+		if (xmlURL!=null)
+		{
+			txEhcachePath.setText(xmlURL);
+		}
 
 	}
 
@@ -262,12 +183,12 @@ public class EhCachePluginOutputDialog extends BaseStepDialog implements StepDia
 
 	private void ok()
 	{
-		stepname = wStepname.getText(); // return value
-		
+		stepname = txStepName.getText(); // return value
+
 		logDebug("*** New CacheName is: " + cacheName + " xml URL is: " + xmlURL);
 
-		input.setCacheName( wValue.getText() );
-		input.setXmlURL(wValName.getText());
+		input.setCacheName( txCacheName.getText() );
+		input.setXmlURL(txEhcachePath.getText());
 
 		dispose();
 	}

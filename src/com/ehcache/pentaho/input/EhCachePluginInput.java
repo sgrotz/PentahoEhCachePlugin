@@ -79,7 +79,7 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 		meta = (EhCachePluginInputMeta) iMeta;
 		data = (EhCachePluginInputData) iData;
 
-		// manager.shutdown();
+		manager.shutdown();
 
 		super.dispose(iMeta, iData);
 
@@ -118,6 +118,10 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 			throws KettleException {
 		// TODO Auto-generated method stub
 
+		if (manager == null) {
+			init(iMeta, iData);
+		}
+		
 		meta = (EhCachePluginInputMeta) iMeta;
 		data = (EhCachePluginInputData) iData;
 

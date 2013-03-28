@@ -78,7 +78,7 @@ public class EhCachePluginDummyPojo extends BaseStep implements StepInterface {
 		meta = (EhCachePluginDummyPojoMeta) iMeta;
 		data = (EhCachePluginDummyPojoData) iData;
 
-		// manager.shutdown();
+		manager.shutdown();
 
 		super.dispose(iMeta, iData);
 
@@ -117,6 +117,10 @@ public class EhCachePluginDummyPojo extends BaseStep implements StepInterface {
 			throws KettleException {
 		// TODO Auto-generated method stub
 
+		if (manager == null) {
+			init(iMeta, iData);
+		}
+		
 		meta = (EhCachePluginDummyPojoMeta) iMeta;
 		data = (EhCachePluginDummyPojoData) iData;
 		

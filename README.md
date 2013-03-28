@@ -24,4 +24,5 @@ Have fun!
 
 Change log: 
 * 26/02/2013 - Updated Terracotta libraries to 3.7.4
+* 27/03/2013 - Added reflective Pojo PUT service to the stack. 
 
