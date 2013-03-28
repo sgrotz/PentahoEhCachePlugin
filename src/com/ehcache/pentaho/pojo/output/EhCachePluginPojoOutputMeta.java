@@ -263,7 +263,7 @@ public class EhCachePluginPojoOutputMeta extends BaseStepMeta implements StepMet
 	{
 		return new EhCachePluginPojoOutputData();
 	}
-	
+
 	
 	public EhCachePluginPojoOutputMeta()
 	{

@@ -61,7 +61,7 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 		super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
 		// TODO Auto-generated constructor stub
 	}
-
+ 
 	private EhCachePluginPojoOutputData data;
 	private EhCachePluginPojoOutputMeta meta;
 	private CacheManager manager;
