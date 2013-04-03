@@ -151,7 +151,7 @@ public class EhCachePluginInput extends BaseStep implements StepInterface {
 		}
 		
 		// Get the Key value from the input row ...
-		String key = data.outputRowMeta.getString(obj, data.outputRowMeta.indexOfValue("KEY"));
+		Long key = data.outputRowMeta.getInteger(obj, data.outputRowMeta.indexOfValue("KEY"));
 
 		if (key != null) {
 			cache = manager.getCache(meta.getCacheName());

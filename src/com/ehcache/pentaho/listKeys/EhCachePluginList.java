@@ -145,33 +145,18 @@ public class EhCachePluginList extends BaseStep implements StepInterface {
 		List keys = cache.getKeys();
 		
 		logDebug("*** Found " + keys.size() + " Elements: " + keys.toString());
-		
-		Iterator it = keys.iterator();
-		int i = 0;
-		
-		Object[] outputRow = new Object[keys.size()];
 
-		while (it.hasNext()) {
+		Object[] outputRow = new Object[keys.size()];
 		
-			Element e = cache.get(it.next());
-			String key = e.getObjectKey().toString();
+		for (Object key : cache.getKeys()) {
 			
 			logDebug("*** Adding Key " + key + " to the output list ...");
 			
-			if (e != null) {
-				// If not null - add to the output ...
-				outputRow = RowDataUtil.addValueData(outputRow, data.outputRowMeta.size()-1, key);
-				putRow(data.outputRowMeta, outputRow);
-				
-				incrementLinesWritten();	
-			}
-
-			i++;
-		
-		    // Some basic logging
-		    if (checkFeedback(getLinesRead())) {
-		        if (log.isBasic()) logBasic("Linenr " + getLinesRead()); 
-		    }
+			outputRow = RowDataUtil.addValueData(outputRow, data.outputRowMeta.size()-1, key);
+			putRow(data.outputRowMeta, outputRow);
+			
+			incrementLinesWritten();	
+			
 		}
 	 
 		setOutputDone();

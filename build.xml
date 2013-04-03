@@ -18,7 +18,7 @@
 	  <property name="libext"     			location="libext"/>
 	  <property name="libswt"     			location="libswt"/>
 	  <property name="libehcache"  			location="libehcache"/>
-	  <property name="zipfilename"  		value="ehCachePlugin_v04.zip"/>
+	  <property name="zipfilename"  		value="ehCachePlugin_v05.zip"/>
 	  <property name="latestArchive"  		value="ehCachePlugin_latest.zip"/>
 	  <property name="deploydir"     		location="/Volumes/others/Tools/Pentaho/plugins/steps/ehCachePlugin"/>
 	
@@ -96,17 +96,19 @@
 	    		dir="${lib}" 
 	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties,**/*.ktr"/>
 	  	    </copy>
-	  	<copy todir="${distrib}">
-	    	<fileset 
-	    		dir="${libehcache}" 
-	    		includes="**/*.jar,**/*.png,**/*.xml,**/*.properties,**/*.ktr"/>
-	  	    </copy>
 	  	    
 	  	<!-- Create a new Zip Archive -->    
 	  	<zip destfile="releases/${zipfilename}"
        		basedir="${distrib}"
-       		update="true"
+       		update="false"
   			/>
+          
+        <!-- Only copy the local ehcache libraries to the distrib folder, once the zip is created 
+        <copy todir="${distrib}">
+              <fileset
+              dir="${libehcache}"
+              includes="**/*.jar,**/*.png,**/*.xml,**/*.properties,**/*.ktr"/>
+          </copy>-->
   			
   		<!-- create a clone to _latest file -->	
   	   <copy file="releases/${zipfilename}" tofile="${latestArchive}"/>

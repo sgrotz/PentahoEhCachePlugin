@@ -151,7 +151,7 @@ public class EhCachePluginOutput extends BaseStep implements StepInterface {
 
 		// Get the ID's and Values from the input rows...
 		String value = data.outputRowMeta.getString(obj, data.outputRowMeta.indexOfValue("VALUE"));
-		String ID = data.outputRowMeta.getString(obj, data.outputRowMeta.indexOfValue("KEY"));
+		Long ID = data.outputRowMeta.getInteger(obj, data.outputRowMeta.indexOfValue("KEY"));
 
 		if ((ID != null) && (value != null)) {
 			cache = manager.getCache(meta.getCacheName());

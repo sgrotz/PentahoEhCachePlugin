@@ -129,7 +129,7 @@ public class EhCachePluginInputMeta extends BaseStepMeta implements StepMetaInte
 	public void getFields(RowMetaInterface r, String origin, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space)
 	{
 	    // append the outputFields to the output
-	        ValueMetaInterface id = new ValueMeta("KEY", ValueMetaInterface.TYPE_STRING);
+	        ValueMetaInterface id = new ValueMeta("KEY", ValueMetaInterface.TYPE_NUMBER);
 	 
 	        id.setOrigin(origin);
 	        r.addValueMeta(id);

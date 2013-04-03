@@ -1,4 +1,4 @@
-package com.ehcache.pentaho.pojo.output;
+package com.ehcache.pentaho.pojo.input;
 
 
 /*
@@ -38,7 +38,10 @@ import net.sf.ehcache.Element;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleValueException;
+import org.pentaho.di.core.row.RowDataUtil;
 import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.row.ValueMeta;
+import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.BaseStep;
@@ -52,9 +55,9 @@ import org.pentaho.di.trans.step.StepMetaInterface;
  * @author sgrotz
  *
  */
-public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
+public class EhCachePluginPojoInput extends BaseStep implements StepInterface {
 
-	public EhCachePluginPojoOutput(StepMeta stepMeta,
+	public EhCachePluginPojoInput(StepMeta stepMeta,
 			StepDataInterface stepDataInterface, int copyNr,
 			TransMeta transMeta, Trans trans) {
 
@@ -62,8 +65,8 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 		// TODO Auto-generated constructor stub
 	}
  
-	private EhCachePluginPojoOutputData data;
-	private EhCachePluginPojoOutputMeta meta;
+	private EhCachePluginPojoInputData data;
+	private EhCachePluginPojoInputMeta meta;
 	private CacheManager manager;
 	private Cache cache;
 
@@ -76,8 +79,8 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 	public void dispose(StepMetaInterface iMeta, StepDataInterface iData) {
 		// TODO Auto-generated method stub
 
-		meta = (EhCachePluginPojoOutputMeta) iMeta;
-		data = (EhCachePluginPojoOutputData) iData;
+		meta = (EhCachePluginPojoInputMeta) iMeta;
+		data = (EhCachePluginPojoInputData) iData;
 
 		if (meta.isUseBulkApi()) {
 			cache.setNodeBulkLoadEnabled(false);
@@ -97,8 +100,8 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 	public boolean init(StepMetaInterface iMeta, StepDataInterface iData) {
 		// TODO Auto-generated method stub
 
-		meta = (EhCachePluginPojoOutputMeta) iMeta;
-		data = (EhCachePluginPojoOutputData) iData;
+		meta = (EhCachePluginPojoInputMeta) iMeta;
+		data = (EhCachePluginPojoInputData) iData;
 
 		String cacheName = meta.getCacheName();
 		String xmlURL = meta.getXmlURL();
@@ -136,8 +139,8 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 			init(iMeta, iData);
 		}
 
-		meta = (EhCachePluginPojoOutputMeta) iMeta;
-		data = (EhCachePluginPojoOutputData) iData;
+		meta = (EhCachePluginPojoInputMeta) iMeta;
+		data = (EhCachePluginPojoInputData) iData;
 
 		String className = meta.getClassName();
 		String idFieldName = meta.getIdFieldName();
@@ -167,61 +170,60 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 			meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
 		}
 
-		Object transformedObject = null;
+		// Get the Key value from the input row ...
+		Long key = data.outputRowMeta.getInteger(obj, data.outputRowMeta.indexOfValue("KEY"));
 
-		try {
-			transformedObject = transformRowToObject(Class.forName(className), obj, meta, data);
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		long ID = 0;
-		try {
-			ID = getObjectID(idFieldName, obj);
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		if ((ID != 0) && (transformedObject != null)) {
+		if (key != null) {
 			cache = manager.getCache(meta.getCacheName());
-
-			// Add the elements to the cache...
-			logDebug("*** Writing new Java Object as element: " + ID );     
-			cache.put(new Element(ID, transformedObject));
-
-			if (checkFeedback(linesRead)) logBasic("Linenr "+linesRead);
-
-			incrementLinesWritten();
-			return true;
+	
+			logDebug("*** Getting Element " + key + " from the cache ...");
+			Element element = cache.get(key);
+		
+			if (element != null) {
+				// If not null - add to the output ...
+				
+				Object[] outputRow = null;
+				try {
+					outputRow = RowDataUtil.addValueData(obj, data.outputRowMeta.size()-1, transformObjectToRow(Class.forName(meta.getClassName()), element, meta, data));
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				putRow(data.outputRowMeta, outputRow);
+				
+				incrementLinesWritten();	
+			} else {
+				// Log an error that the element is not existing ... 
+				logError("*** Element " + key + " does not exist anymore ...");
+			}
+	
+		    // Some basic logging
+		    if (checkFeedback(getLinesRead())) {
+		        if (log.isBasic()) logBasic("Linenr " + getLinesRead()); 
+		    }
+		 
+		    return true;
 		} else {
-			// Throw an error when the ID or Value was null
-			logError("*** KEY or Object was null ...");     
+			// No key field was specified ... 
+			logError("*** KEY field was null ..."); 
 			return false;
 		}
 	}
@@ -245,42 +247,62 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 	 * @throws InvocationTargetException
 	 * @throws KettleValueException
 	 */
-	private Object transformRowToObject(Class objectClass, Object[] rowObject, StepMetaInterface iMeta, StepDataInterface iData) throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, KettleValueException {
+	private Object[] transformObjectToRow (Class objectClass, Element element, StepMetaInterface iMeta, StepDataInterface iData) throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, KettleValueException {
 		
 		// Initializing a map for all public setter methods
-		Map<String, Method> setterMethodMap = new HashMap<String, Method>();
+		Map<String, Method> getterMethodMap = new HashMap<String, Method>();
 		Map<String, String> fieldMap = new HashMap<String, String>();
 
 		// Determine all public set methods
 		Method[] methods = objectClass.getMethods();
 		for (Method method : methods) {
-			// Only add this method if it is part of the class itself and if it's a setter
-			if(method.toGenericString().contains(objectClass.getCanonicalName()) && method.getName().startsWith("set")){
-				setterMethodMap.put(method.getName(), method);
+			// Only add this method if it is part of the class itself and if it's a getter
+			if(method.toGenericString().contains(objectClass.getCanonicalName()) && method.getName().startsWith("get")){
+				getterMethodMap.put(method.getName(), method);
 			}
 		}
+		
+		int getterCount = getterMethodMap.size();
+		logDebug("*** Object " + objectClass.getName() + " has " + getterCount + " get methods..."); 
 
-		// Map all incoming fields into a map - remove the "_"
+/*		// Map all incoming fields into a map - remove the "_"
 		String[] fieldNames = data.outputRowMeta.getFieldNames();
 		for (String field : fieldNames) {
 			logDebug("Added new fieldname to the fieldList: " + field.replaceAll("_", "").toUpperCase());
 			fieldMap.put(field.replaceAll("_", "").toUpperCase(), field);
-		}
+		}*/
 
 		// Create new object
-		Object object = objectClass.newInstance();
+		Object object = element.getObjectValue();
+		
+		// Create a new empty return object
+		Object[] returnObject = null;
 
-		int setterCount = setterMethodMap.size();
-		logDebug("*** Object " + objectClass.getName() + " has " + setterCount + " set methods...");     
-
+		int i = 0;
+		
 		// Loop over all entries in the setterMap
-		for (Map.Entry<String, Method> entry : setterMethodMap.entrySet()) {
+		for (Map.Entry<String, Method> entry : getterMethodMap.entrySet()) {
 
-			// the SetterName is the method name in CAPITAL, without the first three letters
-			String setterName = entry.getKey().substring(3).toUpperCase();
+			// the fieldName is the method name in CAPITAL, without the first three letters
+			String fieldName = entry.getKey().substring(3).toUpperCase();
+			
+			// get the getterMethod
+			Method getterMethod = entry.getValue();
+			
+			// Find out which type of object is expected in the setter method
+			Class<?> parameterTypeClass = getterMethod.getReturnType();
+			
+			if (parameterTypeClass.equals(String.class) ){
+				logDebug("*** Getting String Value from " + getterMethod.toString());
+				
+		        data.outputRowMeta.addValueMeta(new ValueMeta(fieldName, ValueMetaInterface.TYPE_STRING));
+				returnObject[i] = getterMethod.invoke(object);
+			}
+			
+			
 
-			Method setterMethod = entry.getValue();
-			String fieldName = null;
+			
+			/*String fieldName = null;
 
 			// First check if the field map contains a key for the setterName
 			if (fieldMap.containsKey(setterName)){
@@ -352,13 +374,13 @@ public class EhCachePluginPojoOutput extends BaseStep implements StepInterface {
 					// TODO Do this correctly.
 					throw new UnsupportedOperationException("Unsupported type found: " + parameterTypeClass.getCanonicalName() + " for field: "+ fieldName);
 				}
-			} 
+			} */
 
 		}
 
 		logDebug("*** Finished mapping object " + objectClass.getName());    
 
-		return object;
+		return returnObject;
 	}
 
 	public long getObjectID(String idFieldName, Object[] rowObject) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, KettleValueException {
